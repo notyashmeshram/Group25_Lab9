@@ -11,10 +11,33 @@ uint32_t TxData = 0x00;
 uint32_t sine_digitized = 0;
 int main(void)
 {
-    INIT_GPIO_PORTF_REGISTERS();
-    INIT_GPIO_PORTB_REGISTERS();
-    INIT_GPIO_PORTA_REGISTERS();
+    
+ // GPIO Port F registers
+    SYSCTL_RCGCGPIO_R |= 0x20;
+    GPIO_PORTF_LOCK_R = 0x4C4F434B;    
+    GPIO_PORTF_CR_R = 0x1F;            
+    GPIO_PORTF_DEN_R = 0x1F;           
+    GPIO_PORTF_DIR_R = 0x0E;           
+    GPIO_PORTF_PUR_R = 0x11;
+    
+// GPIO Port B registers
+    SYSCTL_RCGCGPIO_R |= 0x02;
+    GPIO_PORTB_LOCK_R = 0x4C4F434B;    
+    GPIO_PORTB_DEN_R = 0x0C;
+    GPIO_PORTB_AFSEL_R = 0x0C;
+    GPIO_PORTB_ODR_R = 0x08;
+    GPIO_PORTB_PCTL_R = 0x3300;
+    GPIO_PORTB_PUR_R = 0x0C;
+    
+// GPIO Port A registers
+    SYSCTL_RCGCGPIO_R |= 0x01;
+    GPIO_PORTA_LOCK_R = 0x4C4F434B;     
+    GPIO_PORTA_DEN_R = 0xC0;
+    GPIO_PORTA_AFSEL_R = 0xC0;
+    GPIO_PORTA_ODR_R = 0x80;
+    GPIO_PORTA_PCTL_R = 0x33000000;
 
+// I2C initialization and control registers
     SYSCTL_RCGCI2C_R = 0x03;
     NVIC_EN1_R = 0x00000020; 
 
@@ -41,41 +64,6 @@ int main(void)
 
     }
     return 0;
-}
-
-void INIT_GPIO_PORTF_REGISTERS(){
-
-	 /*  set up GPIO PortF*/
-    SYSCTL_RCGCGPIO_R |= 0x20;
-    GPIO_PORTF_LOCK_R = 0x4C4F434B;    
-    GPIO_PORTF_CR_R = 0x1F;            
-    GPIO_PORTF_DEN_R = 0x1F;           
-    GPIO_PORTF_DIR_R = 0x0E;           
-    GPIO_PORTF_PUR_R = 0x11;           
-
-}
-
-void INIT_GPIO_PORTB_REGISTERS(){
-
-    SYSCTL_RCGCGPIO_R |= 0x02;
-    GPIO_PORTB_LOCK_R = 0x4C4F434B;    
-    GPIO_PORTB_DEN_R = 0x0C;
-    GPIO_PORTB_AFSEL_R = 0x0C;
-    GPIO_PORTB_ODR_R = 0x08;
-    GPIO_PORTB_PCTL_R = 0x3300;
-    GPIO_PORTB_PUR_R = 0x0C;
-
-}
-
-void INIT_GPIO_PORTA_REGISTERS(){
-
-    SYSCTL_RCGCGPIO_R |= 0x01;
-    GPIO_PORTA_LOCK_R = 0x4C4F434B;     
-    GPIO_PORTA_DEN_R = 0xC0;
-    GPIO_PORTA_AFSEL_R = 0xC0;
-    GPIO_PORTA_ODR_R = 0x80;
-    GPIO_PORTA_PCTL_R = 0x33000000;
-
 }
 
 void TxDAC(uint8_t Slave_Addr, int n_bytes, uint32_t data){
